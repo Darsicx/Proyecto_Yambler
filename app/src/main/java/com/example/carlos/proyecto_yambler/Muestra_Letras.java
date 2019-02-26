@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 public class Muestra_Letras extends AppCompatActivity {
     FloatingActionButton fab;
     Intent intent;
+    SQLiteDatabase letrasDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,10 @@ public class Muestra_Letras extends AppCompatActivity {
         setContentView(R.layout.activity_muestra__letras);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        letrasDB=this.openOrCreateDatabase("LETRAS",MODE_PRIVATE,null);
+        letrasDB.execSQL("CREATE TABLE IF NOT EXISTS letra (id INT PRIMARY KEY,titulo VARCHAR,artista VARCHAR,cancion VARCHAR)");
+
 
         TextView texto=findViewById(R.id.letras);
 
@@ -39,13 +46,12 @@ public class Muestra_Letras extends AppCompatActivity {
                         .setAction("Action", null).show();
                 fab.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
                 fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-//                SharedPreferences shared =getApplicationContext().getSharedPreferences("com.example.carlos.proyecto_yambler",Context.MODE_PRIVATE);
-////                shared.edit().putString("letras","");
-                FavoritasAct.titulos.add(intent.getStringExtra("cancion"));
-                //FavoritasAct.artistas.add(intent.getStringExtra("artista"));
-                FavoritasAct.contenido.add(intent.getStringExtra("letra"));
-                FavoritasAct.adapter.notifyDataSetChanged();
-
+                String sql ="INSERT INTO letra (titulo,artista,cancion) VALUES (?,?,?)";
+                SQLiteStatement statement=letrasDB.compileStatement(sql);
+                statement.bindString(1,intent.getStringExtra("titulo"));
+                statement.bindString(2,intent.getStringExtra("artista"));
+                statement.bindString(3,intent.getStringExtra("letra"));
+                statement.execute();
 
 
             }

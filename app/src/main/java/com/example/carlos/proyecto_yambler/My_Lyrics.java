@@ -105,18 +105,21 @@ public class My_Lyrics extends AppCompatActivity {
                 if (can.contains("\t")) {
                     newSong = can.replace('\t', '_');
                     letras.execute("https://api.lyrics.ovh/v1/" + art + "/" + newSong);
-                    pasaLetra.putExtra("cancion", art + "-" + newSong);
+                    pasaLetra.putExtra("titulo", newSong);
+                    pasaLetra.putExtra("artista",art);
 
                 }
                 if (art.contains("\t")) {
                     newArtist = art.replace('\t', '_');
                     letras.execute("https://api.lyrics.ovh/v1/" + newArtist + "-" + can);
-                    pasaLetra.putExtra("cancion", newArtist + "-" + can);
+                    pasaLetra.putExtra("titulo", can);
+                    pasaLetra.putExtra("artista",newArtist);
 
                 } else {
 
                     letras.execute("https://api.lyrics.ovh/v1/" + art + "/" + can);
-                    pasaLetra.putExtra("cancion", art + "-" + can);
+                    pasaLetra.putExtra("titulo", can);
+                    pasaLetra.putExtra("artista",art);
 
                 }
             }

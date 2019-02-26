@@ -2,4 +2,5 @@
     <string name="app_name">Proyecto_Yambler</string>
     <string name="title_activity_muestra__letra">Muestra_Letra</string>
     <string name="title_activity_muestra__letras">Muestra_Letras</string>
+    <string name="title_activity_mues_letra_base">MuesLetraBase</string>
 </resources>
