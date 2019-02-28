@@ -7,6 +7,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Actividad que se tenía planeada para usarse como menú entre los dos proyectos
+    // método onclick que dirige a la activity My_Lyrics
     public void abreLetras(View view){
 
         Intent intento =new Intent(this,My_Lyrics.class);
@@ -14,9 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void abreSeries(View view){
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

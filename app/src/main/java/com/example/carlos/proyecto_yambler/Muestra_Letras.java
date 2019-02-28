@@ -17,9 +17,13 @@ import android.view.View;
 import android.widget.TextView;
 
 public class Muestra_Letras extends AppCompatActivity {
+
+    //Declaracion de variables globales
     FloatingActionButton fab;
     Intent intent;
     SQLiteDatabase letrasDB;
+    boolean guardar=false;
+    String titu="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,30 +32,43 @@ public class Muestra_Letras extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Creamos o abrimos base de datos en modo privado para no compartir datos entre aplicaciones
         letrasDB=this.openOrCreateDatabase("LETRAS",MODE_PRIVATE,null);
-        letrasDB.execSQL("CREATE TABLE IF NOT EXISTS letra (id INT PRIMARY KEY,titulo VARCHAR,artista VARCHAR,cancion VARCHAR)");
+        letrasDB.execSQL("CREATE TABLE IF NOT EXISTS letra (id INTEGER PRIMARY KEY,titulo VARCHAR,artista VARCHAR,cancion VARCHAR)");//Creamos tabla en caso de no existir
 
 
         TextView texto=findViewById(R.id.letras);
 
         intent=getIntent();
+        getSupportActionBar().setTitle(intent.getStringExtra("titulo")+"-"+intent.getStringExtra("artista")); //Cambiamos de nombre a la barra
         Log.i("Muestras",intent.getStringExtra("letra"));
         texto.setText(intent.getStringExtra("letra"));
+        titu=intent.getStringExtra("titulo");
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                fab.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                String sql ="INSERT INTO letra (titulo,artista,cancion) VALUES (?,?,?)";
-                SQLiteStatement statement=letrasDB.compileStatement(sql);
-                statement.bindString(1,intent.getStringExtra("titulo"));
-                statement.bindString(2,intent.getStringExtra("artista"));
-                statement.bindString(3,intent.getStringExtra("letra"));
-                statement.execute();
+            public void onClick(View view) {//Metodo onclicklistener para estar monitorenado el boton flotante
+
+                if (guardar == false) {//Verificamos si la cancion esta guardada, si no lo esta la guardamos, si lo esta la eliminamos de la base de datos
+                    fab.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                    String sql = "INSERT INTO letra (titulo,artista,cancion) VALUES (?,?,?)";
+                    SQLiteStatement statement = letrasDB.compileStatement(sql);
+                    statement.bindString(1, intent.getStringExtra("titulo"));
+                    statement.bindString(2, intent.getStringExtra("artista"));
+                    statement.bindString(3, intent.getStringExtra("letra"));
+                    statement.execute();
+                    guardar=true;
+                }
+                else {
+                    String sql="DELETE FROM letra WHERE titulo="+"\'"+titu+"\'";
+                    letrasDB.execSQL(sql);
+                    fab.setImageResource(android.R.drawable.ic_menu_add);
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                    guardar=false;
+                }
 
 
             }
